@@ -1,5 +1,6 @@
+from datetime import datetime
 class Activity:
-    def __init__(self, name, start_time, end_time = None):
+    def __init__(self, name, start_time = datetime.now(), end_time = None):
         self.name = name
         self.start_time = start_time
         self.end_time = end_time
