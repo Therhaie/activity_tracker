@@ -26,10 +26,17 @@ def add_activity(conn, activity):
     conn.commit()
     return cur.lastrowid
 
-def retrieve_data(conn, activity):
-    sql = ''' SELECT * FROM activities.db WHERE name = {activity} '''
+def retrieve_data(conn, activity, table_name = 'activities'):
+    # sql = ''' SELECT * FROM activities.db WHERE name = {activity} '''
+    query = f"SELECT * FROM {table_name} WHERE name = ?"
     cur = conn.cursor()
-    cur.execute("SELECT * FROM activities WHERE name = ?", (activity,))
+    cur.execute(query,(activity,))
     rows = cur.fetchall()
     return rows
 
+def retrieve_name_activities(conn,table_name = 'activities'):
+    cur = conn.cursor()
+    query = f"SELECT DISTINCT name FROM {table_name}"
+    cur.execute(query) # need to specify the database in case of multiple
+    names = cur.fetchall()
+    return names

@@ -20,14 +20,16 @@ def main():
     # db_connection is a conn used to create connection with the database
 
     os.makedirs("data", exist_ok=True)
-    db_connection = create_connection("data/activities.db")
+    db_connection = create_connection("data/activities.db") # connection('activities.db')
+    # long terme parser to select the database
     create_table(db_connection)
     # controller.end_activity(controller.current_activity) # synthaxe pas ouf
     controller = ActivityController(db_connection)
     # act1 = Activity('act1')
 
 
-    controller.start_activity('Work')
+    controller.start_activity('Break')
+    time.sleep(30)
     controller.end_activity(controller.current_activity)
     add_activity(db_connection, controller.current_activity)
 
