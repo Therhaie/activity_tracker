@@ -1,6 +1,7 @@
 from models.activity import Activity
+
 from controllers.activity_controller import ActivityController
-from database.db import create_connection, create_table, add_activity, retrieve_data, retrieve_name_activities
+from database.db import *
 import os
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
@@ -36,6 +37,7 @@ def get_time_spend(activity):
         time += end_time - start_time
         print("tmime spend", time)
     return time
+
 
 def plot_statistic(List = [], database = 'activities.db'):
     '''
@@ -73,26 +75,26 @@ def plot_statistic(List = [], database = 'activities.db'):
     plt.show()
 
 
-def plot_planning(number_day : int, database ='activities.db') -> None:
-    # get the data of every activities
+def plot_planning(number_days : int, database ='activities.db') -> None:
+    db_connection = connection(database)
+    beginning_day = datetime.now() - timedelta(days=number_days)
+    # get the data of everything between the period
+    all_data = retrieve_all_data_between(db_connection, beginning_day, datetime.now())
+    print(all_data)
 
-    # Sample data for a single task
-    start_time = datetime(2022, 1, 2, 10, 2)
-    start_time_1 = datetime(2022, 1, 3, 8)
-    duration = timedelta(hours=6)
 
+    ##### Handling of axis
     # Create figure and axis
     fig, ax = plt.subplots()
 
     # Set x-axis limits for days
-    ax.set_xlim(datetime(2022, 1, 1, 0, 0), datetime(2022, 1, 6, 0, 0))
+    ax.set_xlim(beginning_day, datetime.now() + timedelta(days=1))
 
     # Set x-axis ticks and labels for days
     ax.xaxis_date()
     ax.xaxis.set_major_locator(mdates.DayLocator())
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%d'))
 
-    # Gestion de l'abscisse de y
     # Set y-axis limits for hours of the day
     ax.set_ylim(6, 19)
     ax.set_yticks(range(6, 20))  # Set y-ticks to every hour
@@ -100,15 +102,28 @@ def plot_planning(number_day : int, database ='activities.db') -> None:
     # Label y-ticks as hours
     ax.set_yticklabels([f'{hour:02d}:00' for hour in range(6, 20)])
 
-    # Plot a single bar for the task using bar for vertical bars
-    ax.bar(start_time, duration.total_seconds() / 3600, bottom=start_time.hour, width=0.8, color='blue')
-    ax.bar(start_time_1, duration.total_seconds() / 3600, bottom=start_time_1.hour, width=0.8, color='red')
-    # Add label for the task
-    ax.text(start_time, start_time.hour + duration.total_seconds() / 7200, 'task_name', ha='center', va='bottom',
-            color='black')
-    ax.text(start_time_1, start_time_1.hour + duration.total_seconds() / 7200, 'task_2', ha='center', va='bottom',
-            color='black')
-    # Label axes
+    #todo same colors for same activities
+    #
+
+    #handle the data
+    for data in all_data:
+        # Define the format of the date and time string
+        format = "%Y-%m-%d %H:%M:%S"
+
+        start_time_string = data[2]
+        end_time_string = data[3]
+        start_time = datetime.strptime(start_time_string, format)
+        end_time = datetime.strptime(end_time_string, format)
+        duration = end_time - start_time
+        print("type data", type(start_time))
+        print("type date", type(data[2]))
+        print(type(duration))
+        print(duration.seconds)
+
+        ax.bar(start_time, duration.total_seconds() / 3600, bottom=start_time.hour, width=0.5)
+        ax.text(start_time, start_time.hour + duration.total_seconds() / 7200, f'{data[1]}', ha='center', va='bottom',
+                color='black')
+
     ax.set_xlabel('Day of Month')
     ax.set_ylabel('Time of Day')
 

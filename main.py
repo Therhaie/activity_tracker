@@ -5,7 +5,7 @@ from datetime import datetime
 from models.activity import Activity
 #from views.main_view import MainView
 from controllers.activity_controller import ActivityController
-from database.db import create_connection, create_table, add_activity
+from database.db import create_connection, create_table, add_activity, delete_activity
 
 # def work(controller):
 #     controller.start_activity('Work')
@@ -26,12 +26,12 @@ def main():
     # controller.end_activity(controller.current_activity) # synthaxe pas ouf
     controller = ActivityController(db_connection)
     # act1 = Activity('act1')
-
-    controller.current_activity = Activity('Sleep', datetime(2024, 6, 10, 6, 0), datetime(2024, 6, 10, 8, 0))
+    delete_activity(db_connection, 10)
+    controller.current_activity = Activity('Lunch', datetime(2024, 6, 10, 13, 0), datetime(2024, 6, 10, 14, 0))
 
     # controller.start_activity('Break')
     # controller.end_activity(controller.current_activity)
-    add_activity(db_connection, controller.current_activity)
+    #add_activity(db_connection, controller.current_activity)
 
     # work(controller)
     # #time.sleep(40)

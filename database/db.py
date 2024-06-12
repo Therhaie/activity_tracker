@@ -1,4 +1,6 @@
 import sqlite3
+from datetime import datetime
+
 
 ## Basic function
 def create_connection(db_file):
@@ -53,3 +55,10 @@ def retrieve_name_activities(conn,table_name = 'activities'):
     cur.execute(query) # need to specify the database in case of multiple
     names = cur.fetchall()
     return names
+
+def retrieve_all_data_between(conn, benning_date, ending_date = datetime.now(), table_name = 'activities'):
+    query = f"SELECT * FROM {table_name} WHERE (start_time > ? AND end_time < ?)"
+    cur = conn.cursor()
+    cur.execute(query, (benning_date, ending_date))
+    data = cur.fetchall()
+    return data
