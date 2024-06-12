@@ -1,7 +1,7 @@
 import time
 import tkinter as tk
 import os
-
+from datetime import datetime
 from models.activity import Activity
 #from views.main_view import MainView
 from controllers.activity_controller import ActivityController
@@ -27,10 +27,10 @@ def main():
     controller = ActivityController(db_connection)
     # act1 = Activity('act1')
 
+    controller.current_activity = Activity('Sleep', datetime(2024, 6, 10, 6, 0), datetime(2024, 6, 10, 8, 0))
 
-    controller.start_activity('Break')
-    time.sleep(30)
-    controller.end_activity(controller.current_activity)
+    # controller.start_activity('Break')
+    # controller.end_activity(controller.current_activity)
     add_activity(db_connection, controller.current_activity)
 
     # work(controller)

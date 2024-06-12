@@ -1,5 +1,6 @@
 import sqlite3
 
+## Basic function
 def create_connection(db_file):
     conn = sqlite3.connect(db_file)
     return conn
@@ -15,6 +16,7 @@ def create_table(conn):
     try:
         c = conn.cursor()
         c.execute(sql_create_activities_table)
+        print("table created")
     except sqlite3.Error as e:
         print(e)
 
@@ -24,7 +26,18 @@ def add_activity(conn, activity):
     cur = conn.cursor()
     cur.execute(sql, (activity.name, activity.start_time, activity.end_time))
     conn.commit()
+    print("activity added")
     return cur.lastrowid
+
+def delete_activity(conn, id, table_name = 'activities'):
+    condition = f"id = {id}"
+    query = f"DELETE FROM {table_name} WHERE {condition}"
+    cursor = conn.cursor()
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+
+## Data handling function
 
 def retrieve_data(conn, activity, table_name = 'activities'):
     # sql = ''' SELECT * FROM activities.db WHERE name = {activity} '''

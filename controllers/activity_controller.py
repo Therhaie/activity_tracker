@@ -12,5 +12,3 @@ class ActivityController:
         activity.end_time = datetime.now()
         #add activity to the BDD
         return activity
-
-
